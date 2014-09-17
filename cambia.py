@@ -30,24 +30,38 @@ import pywikibot, re
 
 
 #~ parser = MyHTMLParser()
+
+def removeNonDupes(refs):
+    """Returns a references lists w/o non-duplicated elements"""
+    
+    repetitions = 0
+    for ref1 in refs:
+        for ref2 in refs:
+            if (ref1 == ref2):
+                repetitions = repetitions + 1
+        if (repetitions == 1):
+            print str(repetitions) + " apariciones. Quitado:" + \
+                refs.pop(resul.index(ref2)) + "\n"
+        else:
+            print str(repetitions) + " apariciones. Manteniendo:" + \
+                ref2 + "\n"
+        repetitions = 0
+    return refs
+
 site = pywikibot.Site('es', 'wikipedia')
 page = pywikibot.Page(site, 'Amaral')
 resul = re.findall("<ref(.*?)</ref>", page.text)
-for reference in resul:
-    reference = "<ref" + reference + "</ref>" + "\n"
-    print reference
+print len(resul)
+for i, reference in enumerate(resul):
+    if (resul.count(reference) > 1):
+        resul[i] = u"<ref" + reference + u"</ref>" + "\n"
+    else:
+        resul.remove(reference)
 
 dupes = []
-repetitions = 0
-for ref1 in resul:
-    for ref2 in resul:
-        if (ref1 == ref2):
-            repetitions = repetitions + 1
-    if (repetitions == 1):
-        #~ print "Quitado:" + resul.pop(resul.index(ref2)) + "\n"
-        repetitions = 0
-
-
+print len(resul)
+resul = removeNonDupes(resul)
+print len(resul)
 
 #print page.text
 #~ parser.feed(page.text)
