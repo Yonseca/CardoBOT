@@ -47,9 +47,6 @@ site = pywikibot.Site('es', 'wikipedia')
 page = pywikibot.Page(site, 'Amaral') #just for testing
 resul = re.findall("<ref(.*?)</ref>", page.text)
 
-array = [2,2,2,1,4,3,3]
-for elem in array:
-    print array.count(elem)
 print str(len(resul)) + " referencias"
 dupes = []
 print str(len(resul)) + " referencias"
