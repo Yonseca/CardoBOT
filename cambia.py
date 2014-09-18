@@ -30,7 +30,7 @@ def removeNonDupes(refs):
     return set(refs)
     
 def groupRefs(refs):
-    """Read a list with duplicated references and groups them using
+    """TODO: Read a list with duplicated references and groups them using
     the name attribute """
     for i, reference in refs:
         longref = u"<ref>" + reference + u"</ref>"
