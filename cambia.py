@@ -4,44 +4,39 @@ from collections import Counter
 
 #save = 0
 
-#class MyHTMLParser(HTMLParser):
+class MyHTMLParser(HTMLParser):
 
-    ##save = 0
-    #i = 0
-    #refs = []
-
-    #def handle_starttag(self, tag, attrs):
-        #if tag in ['ref']:
-            ##print "Encountered a start tag:", tag
-            #global save, refs, i
-            #save = 1
-            #for attr in attrs:
+    def handle_starttag(self, tag, attrs):
+        if tag in ['ref']:
+            print "Encountered a start tag:", tag
+            for attr in attrs:
                 #print "atributo: ", attr
 
-    #def handle_endtag(self, tag):
-        ##print "Encountered an end tag :", tag
-        #global save
-        #save = 0
+    def handle_endtag(self, tag):
+        print "Encountered an end tag :", tag
+        global save
 
-    #def handle_data(self, data):
-        #global save
-    #savestatus = save
-        ##if savestatus == 1:
-            ##print "Encountered some data  :", data
+    def handle_data(self, data):
 
 
-#~ parser = MyHTMLParser()
+parser = MyHTMLParser()
 
 def removeNonDupes(refs):
-    """Returns a references lists w/o non-duplicated elements"""
-
-    for i, reference in enumerate(refs):
-        if (refs.count(reference) > 1): #if it appears more than once...
-            refs[i] = u"<ref" + reference + u"</ref>" + "\n"
-        else: 
-            refs.remove(reference)
-    return refs
+    """Returns a set containing all distinct duplicated references"""
     
+    for i, reference in enumerate(refs):
+        if (refs.count(reference) <= 1): #if it appears more than once...
+            del refs[i]
+    return set(refs)
+    
+def groupRefs(refs):
+    """Read a list with duplicated references and groups them using
+    the name attribute """
+    for i, reference in refs:
+        longref = u"<ref>" + reference + u"</ref>"
+        parser.treat(longref)
+    
+
 def printRefs(refs):
     """Prints a refs list"""
     
@@ -51,17 +46,18 @@ def printRefs(refs):
 site = pywikibot.Site('es', 'wikipedia')
 page = pywikibot.Page(site, 'Amaral') #just for testing
 resul = re.findall("<ref(.*?)</ref>", page.text)
-print str(len(resul)) + " referencias"
-printRefs(resul)
+print str(len(resul)) + " references"
+#~ printRefs(resul)
 
 # Removes non-duplicated references and converts the result into a set
 # This will show all distinct duplicated references.
-dupes = set(removeNonDupes(resul))
-printRefs(resul)
-dupes = set(resul)
+dupes = removeNonDupes(resul)
+
+groupRefs(dupes)
+
+    
 printRefs(dupes)
-print str(len(resul)) + " refs"
-print str(len(dupes)) + " to group"
+print str(len(dupes)) + " references to group"
 
 
 
