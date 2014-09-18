@@ -1,4 +1,5 @@
 import pywikibot, re
+from collections import Counter
 #~ from HTMLParser import HTMLParser
 
 #save = 0
@@ -33,25 +34,37 @@ import pywikibot, re
 
 def removeNonDupes(refs):
     """Returns a references lists w/o non-duplicated elements"""
-    
-    repetitions = 0
+
     for i, reference in enumerate(refs):
         if (refs.count(reference) > 1): #if it appears more than once...
             refs[i] = u"<ref" + reference + u"</ref>" + "\n"
-            print str(refs.count(reference)) + ":" + refs[i]
         else: 
             refs.remove(reference)
     return refs
+    
+def printRefs(refs):
+    """Prints a refs list"""
+    
+    for reference in enumerate(refs):
+        print str(reference) + "\n"
 
 site = pywikibot.Site('es', 'wikipedia')
 page = pywikibot.Page(site, 'Amaral') #just for testing
 resul = re.findall("<ref(.*?)</ref>", page.text)
+print str(len(resul)) + " referencias"
+printRefs(resul)
 
-print str(len(resul)) + " referencias"
-dupes = []
-print str(len(resul)) + " referencias"
-resul = removeNonDupes(resul)
-print str(len(resul)) + " referencias"
+# Removes non-duplicated references and converts the result into a set
+# This will show all distinct duplicated references.
+dupes = set(removeNonDupes(resul))
+printRefs(resul)
+dupes = set(resul)
+printRefs(dupes)
+print str(len(resul)) + " refs"
+print str(len(dupes)) + " to group"
+
+
+
 
 #print page.text
 #~ parser.feed(page.text)
