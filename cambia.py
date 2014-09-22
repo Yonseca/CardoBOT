@@ -5,19 +5,32 @@ from collections import Counter
 #save = 0
 
 class MyHTMLParser(HTMLParser):
+    """ Handles the start ref tag attributes 
+        Start tag may have (or not) a name, or group attribute. Or both!
+        We'll need a name attribute in order to group all references. If
+        it doesn't exist, we must generate one. 
+        We don't need a group attribute, but we should save it if exists, 
+        as we don't want to lose information. 
+    """
+    
+    numRef = 0
 
     def handle_starttag(self, tag, attrs):
+        name = ''
+        group = ''
+        
         if tag in ['ref']:
             print "Encountered a start tag:", tag
             for attr in attrs:
-                #print "atributo: ", attr
-
-    def handle_endtag(self, tag):
-        print "Encountered an end tag :", tag
-        global save
-
-    def handle_data(self, data):
-
+                if attr == 'name':
+                    name = attr.index(1)
+                if attr == 'group':
+                    group = attr.index(1)
+            if name == '':
+                numRef = numRef + 1
+                name = u'auto' + str(numRef)
+        
+        return [name, group]
 
 parser = MyHTMLParser()
 
@@ -39,7 +52,6 @@ def groupRefs(refs):
 
 def printRefs(refs):
     """Prints a refs list"""
-    
     for reference in enumerate(refs):
         print str(reference) + "\n"
 
@@ -52,7 +64,6 @@ print str(len(resul)) + " references"
 # Removes non-duplicated references and converts the result into a set
 # This will show all distinct duplicated references.
 dupes = removeNonDupes(resul)
-
 groupRefs(dupes)
 
     
