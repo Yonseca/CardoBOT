@@ -5,6 +5,20 @@ from collections import Counter
 #save = 0
 
 class MyHTMLParser(HTMLParser):
+<<<<<<< HEAD
+=======
+    """ Handles the start ref tag attributes and returns a list with them. 
+        
+        Start tag may have (or not) a name, or a group attribute. Or both!
+        We'll need a name attribute in order to group all references. If
+        it doesn't exist, we must generate one. 
+        We don't need a group attribute, but we should save it if exists, 
+        as we don't want to lose information. 
+        
+    """
+    
+    numRef = 0
+>>>>>>> f3e3059... Minor changes
 
     def handle_starttag(self, tag, attrs):
         if tag in ['ref']:
