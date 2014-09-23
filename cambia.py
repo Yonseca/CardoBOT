@@ -1,6 +1,6 @@
 import pywikibot, re
 from collections import Counter
-#~ from HTMLParser import HTMLParser
+from HTMLParser import HTMLParser
 
 #save = 0
 
@@ -25,6 +25,15 @@ class MyHTMLParser(HTMLParser):
             print "Econtrado el ref de apertura"
             for attr in attrs:
                 print "atributo: ", attr
+<<<<<<< HEAD
+=======
+
+    def handle_endtag(self, tag):
+        print "Encountered an end tag :", tag
+        global save
+
+    #def handle_data(self, data):
+>>>>>>> 398a7d64ae3baa292ba58be430f8e41cc10fd3ef
 
     #~ def handle_endtag(self, tag):
         #~ print "Encountered an end tag :", tag
@@ -45,12 +54,19 @@ def removeNonDupes(refs):
 def groupRefs(refs):
     """TODO: Read a list with duplicated references and groups them using
     the name attribute """
+<<<<<<< HEAD
     for i, reference in refs:
         longref = u"<ref>" + reference + u"</ref>"
         parser.feed(longref)
         for reference in refs:
             parser.feed(reference)
 
+=======
+    for reference in refs:
+        reference = u"<ref>" + reference + u"</ref>"
+        parser.feed(reference)
+    
+>>>>>>> 398a7d64ae3baa292ba58be430f8e41cc10fd3ef
 
 def printRefs(refs):
     """Prints a refs list"""
