@@ -22,19 +22,20 @@ class MyHTMLParser(HTMLParser):
 parser = MyHTMLParser()
 
 def removeNonDupes(refs):
-    """Returns a set containing all distinct duplicated references"""
+    """Returns a list containing all distinct duplicated references"""
     
     for i, reference in enumerate(refs):
         if (refs.count(reference) <= 1): #if it appears more than once...
             del refs[i]
-    return set(refs)
+    return list(set(refs))
     
 def groupRefs(refs):
     """TODO: Read a list with duplicated references and groups them using
     the name attribute """
-    for reference in refs:
-        reference = u"<ref>" + reference + u"</ref>"
-        parser.feed(reference)
+    for i, reference in enumerate(refs):
+        refs[i] = u"<ref" + reference + u"</ref>"
+	print reference.encode("utf-8")
+        parser.feed(refs[i])
     
 
 def printRefs(refs):
