@@ -7,11 +7,10 @@ from HTMLParser import HTMLParser
 class MyHTMLParser(HTMLParser):
 
     def handle_starttag(self, tag, attrs):
+	name = ''
+	group = ''
         if tag in ['ref']:
-
             print "Encountered a start tag:", tag
-            for attr in attrs:
-                print "atributo: ", attr
 
     def handle_endtag(self, tag):
         print "Encountered an end tag :", tag
@@ -27,8 +26,9 @@ def removeNonDupes(refs):
     
     # If a reference appears more than once, delete it
     for i, reference in enumerate(refs):
-        if (refs.count(reference) <= 1):
-            del refs[i]
+        if (refs.count(refs[i]) <= 1):
+            print  "Eliminado: " + refs[i].encode("utf-8")
+	    del refs[i]
 
     # Transform the list into a set, and then back to a list.
     # This will remove duplicities.
@@ -39,7 +39,7 @@ def groupRefs(refs):
     the name attribute """
     for i, reference in enumerate(refs):
         refs[i] = u"<ref" + reference + u"</ref>"
-	print reference.encode("utf-8")
+	print refs[i].encode("utf-8")
         parser.feed(refs[i])
     
 
@@ -50,19 +50,17 @@ def printRefs(refs):
         print str(reference) + "\n"
 
 site = pywikibot.Site('es', 'wikipedia')
-page = pywikibot.Page(site, 'Amaral') #just for testing
-resul = re.findall("<ref(.*?)</ref>", page.text)
+page = pywikibot.Page(site, 'Barack Obama') #just for testing
+resul = re.findall("<ref>(.*?)</ref>", page.text)
 print str(len(resul)) + " references"
 #~ printRefs(resul)
 
 # Removes non-duplicated references and converts the result into a set
 # This will show all distinct duplicated references.
 dupes = removeNonDupes(resul)
-
 groupRefs(dupes)
-
     
-printRefs(dupes)
+#printRefs(dupes)
 print str(len(dupes)) + " references to group"
 
 
