@@ -8,6 +8,7 @@ class MyHTMLParser(HTMLParser):
 
     def handle_starttag(self, tag, attrs):
         if tag in ['ref']:
+
             print "Encountered a start tag:", tag
             for attr in attrs:
                 print "atributo: ", attr
@@ -24,9 +25,13 @@ parser = MyHTMLParser()
 def removeNonDupes(refs):
     """Returns a list containing all distinct duplicated references"""
     
+    # If a reference appears more than once, delete it
     for i, reference in enumerate(refs):
-        if (refs.count(reference) <= 1): #if it appears more than once...
+        if (refs.count(reference) <= 1):
             del refs[i]
+
+    # Transform the list into a set, and then back to a list.
+    # This will remove duplicities.
     return list(set(refs))
     
 def groupRefs(refs):
