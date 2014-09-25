@@ -52,15 +52,13 @@ def printRefs(refs):
 site = pywikibot.Site('es', 'wikipedia')
 page = pywikibot.Page(site, 'Barack Obama') #just for testing
 resul = re.findall("<ref>(.*?)</ref>", page.text)
-print str(len(resul)) + " references"
 #~ printRefs(resul)
 
-# Removes non-duplicated references and converts the result into a set
-# This will show all distinct duplicated references.
-dupes = removeNonDupes(resul)
+dupes = list(resul)
+dupes = removeNonDupes(dupes)
 groupRefs(dupes)
     
-#printRefs(dupes)
+print str(len(resul)) + " references" 
 print str(len(dupes)) + " references to group"
 
 
