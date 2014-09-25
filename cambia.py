@@ -7,8 +7,8 @@ from HTMLParser import HTMLParser
 class MyHTMLParser(HTMLParser):
 
     def handle_starttag(self, tag, attrs):
-	name = ''
-	group = ''
+        name = ''
+        group = ''
         if tag in ['ref']:
             print "Encountered a start tag:", tag
 
@@ -28,7 +28,7 @@ def removeNonDupes(refs):
     for i, reference in enumerate(refs):
         if (refs.count(refs[i]) <= 1):
             print  "Eliminado: " + refs[i].encode("utf-8")
-	    del refs[i]
+        del refs[i]
 
     # Transform the list into a set, and then back to a list.
     # This will remove duplicities.
@@ -39,7 +39,7 @@ def groupRefs(refs):
     the name attribute """
     for i, reference in enumerate(refs):
         refs[i] = u"<ref>" + reference + u"</ref>"
-	print refs[i].encode("utf-8")
+        print refs[i].encode("utf-8")
         parser.feed(refs[i])
     
 
