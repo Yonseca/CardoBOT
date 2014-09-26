@@ -38,7 +38,8 @@ def groupRefs(refs):
     """TODO: Read a list with duplicated references and groups them using
     the name attribute """
     for i, reference in enumerate(refs):
-        refs[i] = u"<ref>" + reference + u"</ref>"
+        name = "name=\"autoname" + str(i+1) + "\""
+        refs[i] = u"<ref "+ name + " >" + reference + u"</ref>"
         print refs[i].encode("utf-8")
         parser.feed(refs[i])
     
