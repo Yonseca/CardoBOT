@@ -74,15 +74,15 @@ class BasicBot:
         for i, reference in enumerate(refs):
             if (refs.count(refs[i]) <= 1):
                 print  "Eliminado: " + refs[i].encode("utf-8")
-            del refs[i]
+                del refs[i]
 
         # Transform the list into a set, and then back to a list.
         # This will remove duplicities.
         return list(set(refs))
         
     def groupRefs(self, refs, text):
-        """TODO: Read a list with duplicated references and groups them
-        using the name attribute """
+        """ Groups the references by setting a name and replace long with
+        short references, excepting the first one. """
         for i, reference in enumerate(refs):
             name = "name=\"autoname" + str(i+1) + "\""
             longref = u"<ref "+ name + u" >" + reference + u"</ref>"
