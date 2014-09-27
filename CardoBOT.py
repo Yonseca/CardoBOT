@@ -23,7 +23,7 @@ The following parameters are supported:
 __version__ = '$Id: 99f83f10f39545a8c0f82a62a702803c5510b86c $'
 #
 
-import pywikibot
+import pywikibot, re
 from pywikibot import pagegenerators
 from pywikibot import i18n
 
@@ -67,36 +67,7 @@ class BasicBot:
         for page in self.generator:
             self.treat(page)
 
-    def treat(self, page):
-        """ Load the given page, does some changes, and saves it. """
-        text = self.load(page)
-        if not text:
-            return
-
-        ################################################################
-        # NOTE: Here you can modify the text in whatever way you want. #
-        ################################################################
-
-        # If you find out that you do not want to edit this page, just return.
-        # Example: This puts the text 'Test' at the beginning of the page.
-        
-        #site = pywikibot.Site('es', 'wikipedia')
-        #page = pywikibot.Page(site, 'Usuario:CardoBOT/Taller') #just for testing
-        resul = re.findall("<ref>(.*?)</ref>", page.text)
-        #~ printRefs(resul)
-
-        dupes = list(resul)
-        print str(len(resul)) + " references" 
-        print str(len(dupes)) + " references to group"
-        dupes = removeNonDupes(dupes)
-        page = groupRefs(dupes)
-
-        #print page.text.encode("utf-8")
-
-        if not self.save(text, page, self.summary):
-            pywikibot.output(u'Page %s not saved.' % page.title(asLink=True))
-
-    def removeNonDupes(refs):
+    def removeNonDupes(self, refs):
         """Returns a list containing all distinct duplicated references"""
         
         # If a reference appears more than once, delete it
@@ -109,7 +80,7 @@ class BasicBot:
         # This will remove duplicities.
         return list(set(refs))
         
-    def groupRefs(refs):
+    def groupRefs(self, refs, text):
         """TODO: Read a list with duplicated references and groups them
         using the name attribute """
         for i, reference in enumerate(refs):
@@ -117,24 +88,43 @@ class BasicBot:
             longref = u"<ref "+ name + u" >" + reference + u"</ref>"
             shortref = u"<ref "+ name + u" />"
             
-            global page
             print u"<ref>" + reference + u"</ref>\n"
-            print page.text.find(u"<ref>" + reference + u"</ref>")
-            page.text = page.text.replace(u"<ref>" + reference + u"</ref>", shortref)
-            page.text = page.text.replace(shortref, longref, 1)
+            print text.find(u"<ref>" + reference + u"</ref>")
+            text = text.replace(u"<ref>" + reference + u"</ref>", shortref)
+            text = text.replace(shortref, longref, 1)
             
             #~ print longref + "\n"
             #~ print shortref + "\n"
             #~ parser.feed(refs[i])
-        return page
-        
+        return text
 
-    def printRefs(refs):
+    def printRefs(self, refs):
         """Prints a refs list"""
         
         for reference in enumerate(refs):
             print str(reference) + "\n"
 
+    def treat(self, page):
+        """ Load the given page, does some changes, and saves it. """
+        text = self.load(page)
+        if not text:
+            return
+        
+        #site = pywikibot.Site('es', 'wikipedia')
+        #page = pywikibot.Page(site, 'Usuario:CardoBOT/Taller') #just for testing
+        resul = re.findall("<ref>(.*?)</ref>", text)
+        #~ printRefs(resul)
+
+        dupes = list(resul)
+        print str(len(resul)) + " references" 
+        print str(len(dupes)) + " references to group"
+        dupes = self.removeNonDupes(dupes)
+        text = self.groupRefs(dupes, text)
+
+        #print page.text.encode("utf-8")
+
+        if not self.save(text, page, self.summary):
+            pywikibot.output(u'Page %s not saved.' % page.title(asLink=True))
 
     def load(self, page):
         """ Load the text of the given page. """

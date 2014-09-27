@@ -2,25 +2,6 @@ import pywikibot, re
 from collections import Counter
 from HTMLParser import HTMLParser
 
-#save = 0
-
-class MyHTMLParser(HTMLParser):
-
-    def handle_starttag(self, tag, attrs):
-        name = ''
-        group = ''
-        if tag in ['ref']:
-            print "Encountered a start tag:", tag
-
-    def handle_endtag(self, tag):
-        print "Encountered an end tag :", tag
-        global save
-
-    #def handle_data(self, data):
-
-
-parser = MyHTMLParser()
-
 def removeNonDupes(refs):
     """Returns a list containing all distinct duplicated references"""
     
@@ -35,13 +16,23 @@ def removeNonDupes(refs):
     return list(set(refs))
     
 def groupRefs(refs):
-    """TODO: Read a list with duplicated references and groups them using
-    the name attribute """
+    """TODO: Read a list with duplicated references and groups them
+    using the name attribute """
     for i, reference in enumerate(refs):
         name = "name=\"autoname" + str(i+1) + "\""
-        refs[i] = u"<ref "+ name + " >" + reference + u"</ref>"
-        print refs[i].encode("utf-8")
-        parser.feed(refs[i])
+        longref = u"<ref "+ name + u" >" + reference + u"</ref>"
+        shortref = u"<ref "+ name + u" />"
+        
+        global page
+        print u"<ref>" + reference + u"</ref>\n"
+        print page.text.find(u"<ref>" + reference + u"</ref>")
+        page.text = page.text.replace(u"<ref>" + reference + u"</ref>", shortref)
+        page.text = page.text.replace(shortref, longref, 1)
+        
+        #~ print longref + "\n"
+        #~ print shortref + "\n"
+        #~ parser.feed(refs[i])
+    return page
     
 
 def printRefs(refs):
@@ -51,13 +42,15 @@ def printRefs(refs):
         print str(reference) + "\n"
 
 site = pywikibot.Site('es', 'wikipedia')
-page = pywikibot.Page(site, 'Barack Obama') #just for testing
+page = pywikibot.Page(site, 'Usuario:CardoBOT/Taller') #just for testing
 resul = re.findall("<ref>(.*?)</ref>", page.text)
 #~ printRefs(resul)
 
 dupes = list(resul)
 dupes = removeNonDupes(dupes)
-groupRefs(dupes)
+page = groupRefs(dupes)
+
+print page.text.encode("utf-8")
     
 print str(len(resul)) + " references" 
 print str(len(dupes)) + " references to group"
