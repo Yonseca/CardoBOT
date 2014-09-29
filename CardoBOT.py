@@ -71,10 +71,13 @@ class BasicBot:
         """Returns a list containing all distinct duplicated references"""
         
         # If a reference appears more than once, delete it
-        for i, reference in enumerate(refs):
-            if (refs.count(refs[i]) <= 1):
-                print  "Eliminado: " + refs[i].encode("utf-8")
-                del refs[i]
+        for reference in refs[:]:
+            if (refs.count(reference) <= 1):
+                print  "Eliminado (" + str(refs.count(reference)) + "): " + reference 
+                refs.remove(reference)
+            else:
+                print  "Manteniendo (" + str(refs.count(reference)) + "): " + reference 
+
 
         # Transform the list into a set, and then back to a list.
         # This will remove duplicities.
@@ -87,8 +90,7 @@ class BasicBot:
             name = "name=\"autoname" + str(i+1) + "\""
             longref = u"<ref "+ name + u" >" + reference + u"</ref>"
             shortref = u"<ref "+ name + u" />"
-            
-            print u"<ref>" + reference + u"</ref>\n"
+            #print u"<ref>" + reference.encode("utf-8") + u"</ref>\n"
             print text.find(u"<ref>" + reference + u"</ref>")
             text = text.replace(u"<ref>" + reference + u"</ref>", shortref)
             text = text.replace(shortref, longref, 1)
@@ -117,8 +119,8 @@ class BasicBot:
 
         dupes = list(resul)
         print str(len(resul)) + " references" 
-        print str(len(dupes)) + " references to group"
         dupes = self.removeNonDupes(dupes)
+        print str(len(dupes)) + " references to group"
         text = self.groupRefs(dupes, text)
 
         #print page.text.encode("utf-8")
