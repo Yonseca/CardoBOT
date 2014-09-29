@@ -73,10 +73,10 @@ class BasicBot:
         # If a reference appears more than once, delete it
         for reference in refs[:]:
             if (refs.count(reference) <= 1):
-                print  "Eliminado (" + str(refs.count(reference)) + "): " + reference 
+                print  "Eliminado (" + str(refs.count(reference)) + "): " + reference.encode("utf-8") 
                 refs.remove(reference)
             else:
-                print  "Manteniendo (" + str(refs.count(reference)) + "): " + reference 
+                print  "Manteniendo (" + str(refs.count(reference)) + "): " + reference.encode("utf-8")
 
 
         # Transform the list into a set, and then back to a list.
