@@ -59,7 +59,8 @@ class BasicBot:
 
         # Set the edit summary message
         site = pywikibot.Site()
-        self.summary = i18n.twtranslate(site, 'basic-changing')
+        #self.summary = i18n.twtranslate(site, 'basic-changing')
+        self.summary = u'¡[[Usuario:CardoBOT|CardoBOT]] en pruebas! Eliminando referencias duplicadas.'
 
 
     def run(self):
