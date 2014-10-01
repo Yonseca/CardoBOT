@@ -29,6 +29,13 @@ docuReplacements = {
     '&params;': pagegenerators.parameterHelp
 }
 
+class Reference:
+    """ Saves all data from a reference """
+    def __init__(self, name, group, data):
+        self.name = name
+        self.group = group
+        self.data = data
+
 class BasicBot:
 
     """An incomplete sample bot."""
