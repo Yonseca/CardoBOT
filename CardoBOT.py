@@ -1,19 +1,15 @@
 #!/usr/bin/python
 # -*- coding: utf-8  -*-
 """
-An incomplete sample script.
+So this is CardoBOT: a bot for the Spanish Wikipedia.
 
-This is not a complete bot; rather, it is a template from which simple
-bots can be made. You can rename it to mybot.py, then edit it in
-whatever way you want.
+CardoBOT looks for duplicated references and groups them. On this first
+version, it just looks if two refs are the same, but reading the whole
+reference (this means, including the <ref> tags). If a duplicated reference
+is found, we generate an automatic name, and set it as a 'name' attribute
+into the tag.
 
-The following parameters are supported:
-
-&params;
-
--dry              If given, doesn't do any real changes, but only shows
-                  what would have been changed.
-
+And that's it.
 """
 #
 # (C) Pywikibot team, 2006-2014
@@ -32,7 +28,6 @@ from pywikibot import i18n
 docuReplacements = {
     '&params;': pagegenerators.parameterHelp
 }
-
 
 class BasicBot:
 
@@ -79,32 +74,28 @@ class BasicBot:
             else:
                 print  "Manteniendo (" + str(refs.count(reference)) + "): " + reference.encode("utf-8")
 
-
         # Transform the list into a set, and then back to a list.
         # This will remove duplicities.
         return list(set(refs))
         
     def groupRefs(self, refs, text):
-        """ Groups the references by setting a name and replace long with
+        """ Groups the references by setting a name and replacing long with
         short references, excepting the first one. """
         for i, reference in enumerate(refs):
             name = "name=\"autoname" + str(i+1) + "\""
             longref = u"<ref "+ name + u" >" + reference + u"</ref>"
             shortref = u"<ref "+ name + u" />"
+            
             #print u"<ref>" + reference.encode("utf-8") + u"</ref>\n"
             print text.find(u"<ref>" + reference + u"</ref>")
             text = text.replace(u"<ref>" + reference + u"</ref>", shortref)
             text = text.replace(shortref, longref, 1)
-            
-            #~ print longref + "\n"
-            #~ print shortref + "\n"
-            #~ parser.feed(refs[i])
         return text
 
     def printRefs(self, refs):
         """Prints a refs list"""
         
-        for reference in enumerate(refs):
+        for reference in refs[:]:
             print str(reference) + "\n"
 
     def treat(self, page):
@@ -113,19 +104,14 @@ class BasicBot:
         if not text:
             return
         
-        #site = pywikibot.Site('es', 'wikipedia')
-        #page = pywikibot.Page(site, 'Usuario:CardoBOT/Taller') #just for testing
         resul = re.findall("<ref>(.*?)</ref>", text)
-        #~ printRefs(resul)
-
-        dupes = list(resul)
         print str(len(resul)) + " references" 
-        dupes = self.removeNonDupes(dupes)
+        dupes = self.removeNonDupes(list(resul))
         print str(len(dupes)) + " references to group"
         text = self.groupRefs(dupes, text)
-
         #print page.text.encode("utf-8")
 
+        # Done!
         if not self.save(text, page, self.summary):
             pywikibot.output(u'Page %s not saved.' % page.title(asLink=True))
 
