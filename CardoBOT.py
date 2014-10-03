@@ -41,7 +41,6 @@ class Reference:
         print u"Name:" + name + u"\n" \
               u"group" + group + u"\n" \
               u"data" + data + u"\n\n"
-
     
     @property
     def name(self):
@@ -120,7 +119,7 @@ class BasicBot:
         # If a reference appears more than once, delete it
         for i, reference in enumerate(refs):
             refs[i] = u"<ref " + reference + u"</ref>"
-            elem = parser.feed(refs[i])
+            #elem = parser.feed(refs[i])
             listaref.append(elem)
             
             
