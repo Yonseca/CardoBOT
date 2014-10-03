@@ -42,6 +42,7 @@ class Reference:
               u"group" + group + u"\n" \
               u"data" + data + u"\n\n"
 
+    
     @property
     def name(self):
         return name
