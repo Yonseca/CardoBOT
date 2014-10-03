@@ -19,7 +19,7 @@ And that's it.
 __version__ = '$Id: 99f83f10f39545a8c0f82a62a702803c5510b86c $'
 #
 
-import pywikibot, re
+import pywikibot, re, HTMLParser
 from pywikibot import pagegenerators
 from pywikibot import i18n
 
@@ -35,6 +35,48 @@ class Reference:
         self.name = name
         self.group = group
         self.data = data
+        printRef()
+
+    def printRef(self):
+        print u"Name:" + name + u"\n" \
+              u"group" + group + u"\n" \
+              u"data" + data + u"\n\n"
+
+    @property
+    def name(self):
+        return name
+
+    @property
+    def group(self):
+        return group
+
+    @property
+    def data(self):
+        return data
+
+    @group.setter
+    def group(self, value):
+        group = self.value
+
+    @name.setter
+    def name(self, value):
+        name = self.value
+        
+    @data.setter
+    def data(self, value):
+        data = self.value
+
+class HTMLParser:
+
+    def handle_starttag(tag, attrs):
+        name = attrs["name"]
+        group = attrs["group"]
+        data = self.handle_data()
+    
+        return Reference(name, group, data)
+
+    def handle_data(data):
+        return data
 
 class BasicBot:
 
@@ -72,18 +114,25 @@ class BasicBot:
 
     def removeNonDupes(self, refs):
         """Returns a list containing all distinct duplicated references"""
-        
+        parser = HTMLParser()
+        listaref = []
         # If a reference appears more than once, delete it
-        for reference in refs[:]:
-            if (refs.count(reference) <= 1):
-                print  "Eliminado (" + str(refs.count(reference)) + "): " + reference.encode("utf-8") 
-                refs.remove(reference)
-            else:
-                print  "Manteniendo (" + str(refs.count(reference)) + "): " + reference.encode("utf-8")
+        for i, reference in enumerate(refs):
+            refs[i] = u"<ref " + reference + u"</ref>"
+            elem = parser.feed(refs[i])
+            listaref.append(elem)
+            
+            
+##        for reference in refs
+##            if (refs.count(reference) <= 1):
+##                print  "Eliminado (" + str(refs.count(reference)) + "): " + reference.encode("utf-8") 
+##                refs.remove(reference)
+##            else:
+##                print  "Manteniendo (" + str(refs.count(reference)) + "): " + reference.encode("utf-8")
 
         # Transform the list into a set, and then back to a list.
         # This will remove duplicities.
-        return list(set(refs))
+        return list(set(listaref))
         
     def groupRefs(self, refs, text):
         """ Groups the references by setting a name and replacing long with
@@ -111,7 +160,7 @@ class BasicBot:
         if not text:
             return
         
-        resul = re.findall("<ref>(.*?)</ref>", text)
+        resul = re.findall("<ref(.*?)</ref>", text)
         print str(len(resul)) + " references" 
         dupes = self.removeNonDupes(list(resul))
         print str(len(dupes)) + " references to group"
